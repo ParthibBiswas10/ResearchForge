@@ -1,0 +1,44 @@
+# ==============================
+# LLM / LangChain
+# ==============================
+langchain
+langchain-core
+langchain-community
+langchain-openai
+
+# ==============================
+# Multi-Agent / Agent Orchestration
+# ==============================
+langgraph
+
+# ==============================
+# Web Search
+# ==============================
+tavily-python
+
+# ==============================
+# Web Scraping
+# ==============================
+beautifulsoup4
+requests
+
+# ==============================
+# Environment Variables
+# ==============================
+python-dotenv
+
+# ==============================
+# HTTP / Async Support
+# ==============================
+httpx
+aiohttp
+
+# ==============================
+# Data Validation / Schemas
+# ==============================
+pydantic
+
+# ==============================
+# Utilities
+# ==============================
+typing-extensions
