@@ -28,8 +28,22 @@ def web_search(query: str) -> str:
     try:
         tavily = _get_tavily_client()
         response = tavily.search(query=query, max_results=5)
-    except Exception as exc:  
+    except Exception as exc:
         return f"Search failed: {exc}"
+
+    results = response.get("results", []) if isinstance(response, dict) else []
+    if not results:
+        return "No results found."
+
+    output = []
+    for item in results:
+        title = item.get("title", "Untitled")
+        url = item.get("url", "")
+        content = item.get("content", "")
+        output.append(f"{title}\n{url}\n{content[:500]}\n")
+
+    return "\n".join(output)
+
 
 
 print(web_search.invoke("what are the recent news of Messi?"))
