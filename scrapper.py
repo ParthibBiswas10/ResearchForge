@@ -26,4 +26,23 @@ print(scrape.invoke("https://timesofindia.indiatimes.com/sports/football/top-sto
 
 """requests.get()
 
-#equests is a Python library used to send HTTP requests to websites."""
+#equests is a Python library used to send HTTP requests to websites.
+
+soup = BeautifulSoup(resp.text, "html.parser")
+
+It tells BeautifulSoup how to read/parse the HTML.
+
+Think of it like:
+
+BeautifulSoup(HTML, "HOW SHOULD I READ THIS?")
+
+So:
+
+BeautifulSoup(resp.text, "html.parser")
+
+means:
+
+"Take this HTML (resp.text) and understand its structure using Python's built-in HTML parser."
+
+.get_text() is a BeautifulSoup method that extracts the text from HTML.
+"""
