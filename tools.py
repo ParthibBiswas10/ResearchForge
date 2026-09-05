@@ -34,7 +34,7 @@ def web_search(query: str) -> str:
     results = response.get("results", []) if isinstance(response, dict) else []
     if not results:
         return "No results found."
-
+    
     output = []
     for item in results:
         title = item.get("title", "Untitled")

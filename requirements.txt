@@ -42,3 +42,4 @@ pydantic
 # Utilities
 # ==============================
 typing-extensions
+rich
