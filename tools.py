@@ -47,3 +47,48 @@ def web_search(query: str) -> str:
 
 
 print(web_search.invoke("what are the recent news of Messi?"))
+
+@tool
+def scrape(url:str)->str:
+    """Fetch a web page and return a cleaned text excerpt."""
+    try:
+        resp=requests.get(url,timeout=8,headers={"User-Agent":"Mozilla/5.0"})
+
+        soup=BeautifulSoup(resp.text,"html.parser")
+        for tag in soup(["script","header","footer","nav"]):
+            tag.decompose()
+
+        return soup.get_text(separator=" ",strip=True)[:3000]
+    except Exception as e:
+        return f"Could not scrape url: {str(e)}"
+
+print(scrape.invoke("https://timesofindia.indiatimes.com/sports/football/top-stories/the-impossible-messi-and-ronaldo-could-finally-play-together-on-same-team-after-special-invite-from-former-teammate/articleshow/133798533.cms"))    
+
+
+"""
+resp is the Response object holding the status code, headers, and body (resp.text is the HTML as a string).
+
+
+requests.get()
+
+#equests is a Python library used to send HTTP requests to websites.
+
+soup = BeautifulSoup(resp.text, "html.parser")
+
+It tells BeautifulSoup how to read/parse the HTML.
+Think of it like this: before this line, you just have a blob of text that looks like HTML. After this line, Python actually understands its structure — which tags are nested inside which, what their attributes are, and so on — so you can query it programmatically instead of manually searching through a string.
+
+Think of it like:
+
+BeautifulSoup(HTML, "HOW SHOULD I READ THIS?")
+
+So:
+
+BeautifulSoup(resp.text, "html.parser")
+
+means:
+
+"Take this HTML (resp.text) and understand its structure using Python's built-in HTML parser."
+
+.get_text() is a BeautifulSoup method that extracts the text from HTML.
+"""
