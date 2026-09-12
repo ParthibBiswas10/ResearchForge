@@ -42,7 +42,7 @@ Structure the report as:
 
 Be detailed, factual and professional."""),
 ])
-write_chain=prompt|llm|StrOutputParser()
+writer_chain=prompt|llm|StrOutputParser()
 
 critic_prompt = ChatPromptTemplate.from_messages([
      ("system", "You are a sharp and constructive research critic. Be honest and specific."),
