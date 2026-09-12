@@ -1,4 +1,4 @@
-from agents import search_agent, scrap_agent, writer_agent, critic_agent
+from agents import search_agent, scrap_agent, writer_chain, critic_chain
 
 def run_pipeline(topic:str)->dict:
     state{}
@@ -33,6 +33,28 @@ def run_pipeline(topic:str)->dict:
 
     print("\nscrapped content: \n",state['scrapped_result'])
 
-    
+
+#writer chain
+
+    print("\n"+" ="*50)
+    print("step 3 - Writer is drafting the report ...")
+    print("="*50)
+
+research_result=(
+    f"search resuls: \n {state['search_results']} \n\n"
+
+    f"Scrapped content: \n {state['scrapped_result']}"
+)
+
+state["report"]=writer_chain.invoke({
+    "topic": topic,
+    "research": research_result
+})
+
+print("\n Final Report\n",state['report'])
+
+
+#critic chain
+
 
 
