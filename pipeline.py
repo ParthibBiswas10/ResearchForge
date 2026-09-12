@@ -1,7 +1,7 @@
-from agents import search_agent, scrap_agent, writer_chain, critic_chain
+from agents import search_agent, scrape_agent, writer_chain, critic_chain
 
 def run_pipeline(topic:str)->dict:
-    state{}
+    state = {}
 
     print("\n"+" ="*50)
     print("search agent is cooking...")
@@ -20,7 +20,7 @@ def run_pipeline(topic:str)->dict:
     print("scrap agent is cooking...")
     print("="*50)
 
-    agent2=scrap_agent()
+    agent2=scrape_agent()
     scrapped=agent2.invoke({
         "messages": [("user",
             f"Based on the following search results about '{topic}', "
@@ -29,44 +29,44 @@ def run_pipeline(topic:str)->dict:
         )]
     })
 
-    state['scrapped_result']=scraped['messages'][-1].content
+    state['scrapped_result']=scrapped['messages'][-1].content
 
     print("\nscrapped content: \n",state['scrapped_result'])
 
 
-#writer chain
+    #writer chain
 
-    print("\n"+" ="*50)
+    print("\n"+" "*50)
     print("step 3 - Writer is drafting the report ...")
     print("="*50)
 
-research_result=(
+    research_result=(
     f"search resuls: \n {state['search_results']} \n\n"
 
     f"Scrapped content: \n {state['scrapped_result']}"
-)
+    )
 
-state["report"]=writer_chain.invoke({
+    state["report"]=writer_chain.invoke({
     "topic": topic,
     "research": research_result
-})
+    })
 
-print("\n Final Report\n",state['report'])
+    print("\n Final Report\n",state['report'])
 
 
-#critic chain
-print("\n"+" ="*50)
-print("step 4 - critic is reviewing the report ")
-print("="*50)
+    #critic chain
+    print("\n"+" "*50)
+    print("step 4 - critic is reviewing the report ")
+    print("="*50)
 
-state["feedback"]=critic_chain.invoke({
-    "report":state[report]
-})
+    state["feedback"]=critic_chain.invoke({
+        "report":state["report"]
+    })
 
-print("\n critic report \n", state['feedback'])
-return state
+    print("\n critic report \n", state['feedback'])
+    return state
 
-if _name_=="_main_":
+if __name__ == "__main__":
     topic=input("\n Enter a Research topic: ")
     run_pipeline(topic)
 
