@@ -1,5 +1,7 @@
 import os
 
+import requests
+from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 from langchain.tools import tool
 
@@ -44,10 +46,6 @@ def web_search(query: str) -> str:
 
     return "\n".join(output)
 
-
-
-print(web_search.invoke("what are the recent news of Messi?"))
-
 @tool
 def scrape(url:str)->str:
     """Fetch a web page and return a cleaned text excerpt."""
@@ -61,8 +59,6 @@ def scrape(url:str)->str:
         return soup.get_text(separator=" ",strip=True)[:3000]
     except Exception as e:
         return f"Could not scrape url: {str(e)}"
-
-print(scrape.invoke("https://timesofindia.indiatimes.com/sports/football/top-stories/the-impossible-messi-and-ronaldo-could-finally-play-together-on-same-team-after-special-invite-from-former-teammate/articleshow/133798533.cms"))    
 
 
 """
