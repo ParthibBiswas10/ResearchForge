@@ -25,7 +25,7 @@ def _get_tavily_client():
 
 
 @tool
-def web_search(query: str) -> str:
+def search_web(query: str) -> str:
     """Search the web for recent and reliable information on a topic."""
     try:
         tavily = _get_tavily_client()

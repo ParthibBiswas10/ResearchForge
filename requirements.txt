@@ -44,3 +44,4 @@ pydantic
 # ==============================
 typing-extensions
 rich
+streamlit

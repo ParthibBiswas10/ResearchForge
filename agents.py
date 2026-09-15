@@ -2,26 +2,27 @@ from langchain.agents import create_agent
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from langchain_groq import ChatGroq
-from tools import web_search,scrape
+from tools import search_web,scrape
 import os
 
 from dotenv import load_dotenv
 
 load_dotenv()
 
-llm=ChatGroq(model='openai/gpt-oss-120b', temperature=0)
-
+groq_model = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")
+llm = ChatGroq(model=groq_model, temperature=0)
+agent_llm = ChatGroq(model=groq_model, temperature=0)
 #agent for search
 
 def search_agent():
     return create_agent(
-        model=llm,
-        tools=[web_search]
+        model=agent_llm,
+        tools=[search_web]
     )
 
 def scrape_agent():
     return create_agent(
-        model=llm,
+        model=agent_llm,
         tools=[scrape]
     )
 
