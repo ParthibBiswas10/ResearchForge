@@ -27,10 +27,11 @@ def invoke_with_retry(runnable, payload, max_retries=4, base_delay=8):
             raise
     raise last_exc
 
+
 # ── Page config ──────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="ResearchForge · AI Research Agent",
-    page_icon="🔬",
+    page_title="ResearchForge",
+    page_icon="◆",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
@@ -38,319 +39,334 @@ st.set_page_config(
 # ── Custom CSS ────────────────────────────────────────────────────────────────
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,500;0,600;1,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
 
-/* ── Reset & base ── */
+:root {
+    --ink: #1B1712;
+    --ink-2: #241F19;
+    --paper: #EDE6D6;
+    --muted: #9C9385;
+    --brass: #0096c7;
+    --brass-soft: rgba(0,150,199,0.35);
+    --sage: #7FA588;
+    --rust: #B85C4A;
+    --rule: rgba(237,230,214,0.12);
+}
+
 html, body, [class*="css"] {
-    font-family: 'DM Sans', sans-serif;
-    color: #e8e4dc;
+    font-family: 'IBM Plex Sans', sans-serif;
+    color: var(--paper);
 }
 
 .stApp {
-    background: #0a0a0f;
-    background-image:
-        radial-gradient(ellipse 80% 50% at 20% -10%, rgba(255,140,50,0.12) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 40% at 80% 110%, rgba(255,80,30,0.08) 0%, transparent 55%);
+    background: var(--ink);
 }
 
-/* ── Hide default streamlit chrome ── */
 #MainMenu, footer, header { visibility: hidden; }
-.block-container { padding: 2rem 3rem 4rem; max-width: 1200px; }
+.block-container { padding: 3rem 3.5rem 5rem; max-width: 1180px; }
 
-/* ── Hero header ── */
+/* ── Hero ── */
 .hero {
-    text-align: center;
-    padding: 3.5rem 0 2.5rem;
-    position: relative;
+    padding: 1rem 0 2.5rem;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 2.5rem;
 }
-.hero-eyebrow {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.7rem;
-    font-weight: 500;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: #ff8c32;
-    margin-bottom: 1rem;
-    opacity: 0.9;
+.hero-caption {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1.05rem;
+    color: var(--muted);
+    margin-bottom: 0.6rem;
 }
 .hero h1 {
-    font-family: 'Syne', sans-serif;
-    font-size: clamp(2.8rem, 6vw, 5rem);
-    font-weight: 800;
-    line-height: 1.0;
-    letter-spacing: -0.03em;
-    color: #f0ebe0;
-    margin: 0 0 1rem;
-}
-.hero h1 span {
-    color: #ff8c32;
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: clamp(2.4rem, 4.4vw, 3.4rem);
+    letter-spacing: -0.01em;
+    color: var(--paper);
+    margin: 0 0 0.9rem;
 }
 .hero-sub {
-    font-size: 1.05rem;
-    font-weight: 300;
-    color: #a09890;
-    max-width: 520px;
-    margin: 0 auto;
-    line-height: 1.65;
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--muted);
+    max-width: 620px;
+    line-height: 1.7;
 }
 
-/* ── Divider ── */
-.divider {
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255,140,50,0.3), transparent);
-    margin: 2rem 0;
+/* ── Section labels ── */
+.section-label {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--muted);
+    margin: 0 0 1.1rem;
 }
 
-/* ── Input card ── */
-.input-card {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,140,50,0.15);
-    border-radius: 16px;
-    padding: 2rem 2.5rem;
-    margin-bottom: 2rem;
-    backdrop-filter: blur(8px);
+/* ── Input panel ── */
+.brief-panel {
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 1.8rem 2rem;
+    margin-bottom: 1.2rem;
 }
 
-/* ── Streamlit input overrides ── */
 .stTextInput > div > div > input {
-    background: rgba(255,255,255,0.05) !important;
-    border: 1px solid rgba(255,140,50,0.25) !important;
-    border-radius: 10px !important;
-    color: #f0ebe0 !important;
-    font-family: 'DM Sans', sans-serif !important;
-    font-size: 1rem !important;
-    padding: 0.75rem 1rem !important;
-    transition: border-color 0.2s, box-shadow 0.2s !important;
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 1px solid var(--rule) !important;
+    border-radius: 0 !important;
+    color: var(--paper) !important;
+    font-family: 'IBM Plex Sans', sans-serif !important;
+    font-size: 1.05rem !important;
+    padding: 0.5rem 0.1rem !important;
+    transition: border-color 0.2s !important;
 }
 .stTextInput > div > div > input:focus {
-    border-color: #ff8c32 !important;
-    box-shadow: 0 0 0 3px rgba(255,140,50,0.12) !important;
+    border-bottom-color: var(--brass) !important;
+    box-shadow: none !important;
+}
+.stTextInput > div > div > input:focus-visible {
+    outline: 1px solid var(--brass) !important;
+    outline-offset: 3px;
 }
 .stTextInput > label {
-    font-family: 'DM Mono', monospace !important;
-    font-size: 0.72rem !important;
-    letter-spacing: 0.15em !important;
-    text-transform: uppercase !important;
-    color: #ff8c32 !important;
+    font-family: 'IBM Plex Sans', sans-serif !important;
+    font-size: 0.78rem !important;
+    letter-spacing: 0.02em !important;
+    color: var(--muted) !important;
     font-weight: 500 !important;
 }
 
-/* ── Button ── */
 .stButton > button {
-    background: linear-gradient(135deg, #ff8c32 0%, #ff5a1a 100%) !important;
-    color: #0a0a0f !important;
-    font-family: 'Syne', sans-serif !important;
-    font-weight: 700 !important;
-    font-size: 0.95rem !important;
-    letter-spacing: 0.04em !important;
+    background: var(--brass) !important;
+    color: var(--ink) !important;
+    font-family: 'IBM Plex Sans', sans-serif !important;
+    font-weight: 600 !important;
+    font-size: 0.92rem !important;
     border: none !important;
-    border-radius: 10px !important;
-    padding: 0.7rem 2.2rem !important;
+    border-radius: 2px !important;
+    padding: 0.65rem 1.6rem !important;
     cursor: pointer !important;
-    transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s !important;
-    box-shadow: 0 4px 20px rgba(255,140,50,0.3) !important;
+    transition: opacity 0.15s !important;
     width: 100%;
+    margin-top: 0.5rem;
 }
 .stButton > button:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 8px 28px rgba(255,140,50,0.4) !important;
-    opacity: 0.95 !important;
+    opacity: 0.88 !important;
 }
-.stButton > button:active {
-    transform: translateY(0) !important;
+.stButton > button:focus-visible {
+    outline: 1px solid var(--paper) !important;
+    outline-offset: 2px;
+}
+.stDownloadButton > button {
+    background: var(--brass) !important;
+    color: var(--ink) !important;
+    border: none !important;
+}
+.stDownloadButton > button:hover {
+    opacity: 0.88 !important;
 }
 
-/* ── Pipeline step cards ── */
-.step-card {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 14px;
-    padding: 1.5rem 1.8rem;
-    margin-bottom: 1.2rem;
+.try-line {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin: 1.1rem 0 2rem;
+    line-height: 1.9;
+}
+.try-line em { font-style: italic; color: var(--muted); margin-right: 0.5rem; }
+.try-chip {
+    display: inline-block;
+    border-bottom: 1px dotted var(--rule);
+    color: var(--paper);
+    padding: 0 0.1rem 0.1rem;
+    margin-right: 1rem;
+}
+
+/* ── Timeline ── */
+.timeline { position: relative; padding-left: 0.1rem; }
+.timeline-item {
+    display: flex;
+    gap: 1.1rem;
     position: relative;
-    overflow: hidden;
-    transition: border-color 0.3s;
+    padding-bottom: 1.9rem;
 }
-.step-card.active {
-    border-color: rgba(255,140,50,0.4);
-    background: rgba(255,140,50,0.04);
-}
-.step-card.done {
-    border-color: rgba(80,200,120,0.3);
-    background: rgba(80,200,120,0.03);
-}
-.step-card.error {
-    border-color: rgba(220,70,70,0.4);
-    background: rgba(220,70,70,0.05);
-}
-.step-card::before {
+.timeline-item:last-child { padding-bottom: 0; }
+.timeline-item::before {
     content: '';
     position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 3px;
-    border-radius: 14px 0 0 14px;
-    background: rgba(255,255,255,0.05);
-    transition: background 0.3s;
+    left: 0.72rem;
+    top: 1.7rem;
+    bottom: -0.3rem;
+    width: 1px;
+    background: var(--rule);
 }
-.step-card.active::before { background: #ff8c32; }
-.step-card.done::before   { background: #50c878; }
-.step-card.error::before  { background: #dc4646; }
+.timeline-item:last-child::before { display: none; }
 
-.step-header {
+.marker {
+    width: 1.45rem;
+    height: 1.45rem;
+    border-radius: 50%;
+    border: 1.5px solid var(--rule);
+    flex-shrink: 0;
     display: flex;
     align-items: center;
-    gap: 0.8rem;
-    margin-bottom: 0.3rem;
+    justify-content: center;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--muted);
+    background: var(--ink);
+    position: relative;
+    z-index: 1;
 }
-.step-num {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.68rem;
-    font-weight: 500;
-    letter-spacing: 0.15em;
-    color: #ff8c32;
-    opacity: 0.7;
+.marker.running {
+    border-color: var(--brass);
+    color: var(--brass);
+    box-shadow: 0 0 0 3px var(--brass-soft);
+    animation: pulse 1.6s ease-in-out infinite;
 }
+.marker.done {
+    border-color: var(--sage);
+    background: var(--sage);
+    color: var(--ink);
+}
+.marker.error {
+    border-color: var(--rust);
+    background: var(--rust);
+    color: var(--ink);
+}
+@keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 3px var(--brass-soft); }
+    50% { box-shadow: 0 0 0 5px transparent; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .marker.running { animation: none; }
+}
+
+.step-body { flex: 1; padding-top: 0.05rem; }
+.step-row { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
 .step-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: #f0ebe0;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 600;
+    font-size: 0.98rem;
+    color: var(--paper);
 }
 .step-status {
-    margin-left: auto;
-    font-family: 'DM Mono', monospace;
-    font-size: 0.68rem;
-    letter-spacing: 0.1em;
+    font-size: 0.8rem;
+    color: var(--muted);
+    white-space: nowrap;
 }
-.status-waiting  { color: #555; }
-.status-running  { color: #ff8c32; }
-.status-done     { color: #50c878; }
-.status-error    { color: #dc4646; }
-
-/* ── Result panels ── */
-.result-panel {
-    background: rgba(255,255,255,0.025);
-    border: 1px solid rgba(255,255,255,0.07);
-    border-radius: 14px;
-    padding: 1.8rem 2rem;
-    margin-top: 1rem;
-    margin-bottom: 1.5rem;
-}
-.result-panel-title {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.7rem;
-    font-weight: 500;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: #ff8c32;
-    margin-bottom: 1rem;
-    padding-bottom: 0.7rem;
-    border-bottom: 1px solid rgba(255,140,50,0.15);
-}
-.result-content {
-    font-size: 0.92rem;
-    line-height: 1.8;
-    color: #cdc8bf;
-    white-space: pre-wrap;
-    font-family: 'DM Sans', sans-serif;
+.step-status.running { color: var(--brass); }
+.step-status.done { color: var(--sage); }
+.step-status.error { color: var(--rust); }
+.step-desc {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-top: 0.2rem;
+    line-height: 1.5;
 }
 
-/* ── Report & feedback panels ── */
+/* ── Divider ── */
+.rule { height: 1px; background: var(--rule); margin: 2.8rem 0; border: none; }
+
+/* ── Results ── */
 .report-panel {
-    background: rgba(255,255,255,0.025);
-    border: 1px solid rgba(255,140,50,0.2);
-    border-radius: 16px;
-    padding: 2rem 2.5rem;
-    margin-top: 1rem;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 2.4rem 2.8rem;
+    margin-top: 0.5rem;
 }
+.report-panel, .report-panel p, .report-panel li {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: 1.08rem;
+    line-height: 1.75;
+    color: var(--paper);
+}
+.report-panel h1, .report-panel h2, .report-panel h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    color: var(--paper);
+}
+
 .feedback-panel {
-    background: rgba(255,255,255,0.025);
-    border: 1px solid rgba(80,200,120,0.2);
-    border-radius: 16px;
-    padding: 2rem 2.5rem;
-    margin-top: 1rem;
+    border-left: 2px solid var(--brass);
+    padding: 0.3rem 0 0.3rem 1.6rem;
+    margin-top: 0.5rem;
 }
-.panel-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.7rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    margin-bottom: 1.2rem;
-    padding-bottom: 0.7rem;
-}
-.panel-label.orange {
-    color: #ff8c32;
-    border-bottom: 1px solid rgba(255,140,50,0.15);
-}
-.panel-label.green {
-    color: #50c878;
-    border-bottom: 1px solid rgba(80,200,120,0.15);
+.feedback-panel, .feedback-panel p, .feedback-panel li {
+    font-family: 'Fraunces', serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--paper);
 }
 
-/* ── Progress text ── */
-.stSpinner > div { color: #ff8c32 !important; }
+.raw-output {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.82rem;
+    line-height: 1.7;
+    color: var(--muted);
+    white-space: pre-wrap;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 1.4rem 1.6rem;
+}
 
-/* ── Expander ── */
 details summary {
-    font-family: 'DM Mono', monospace !important;
-    font-size: 0.75rem !important;
-    color: #a09890 !important;
-    letter-spacing: 0.1em !important;
+    font-family: 'IBM Plex Sans', sans-serif !important;
+    font-size: 0.82rem !important;
+    color: var(--muted) !important;
     cursor: pointer;
 }
 
-/* ── Section heading ── */
-.section-heading {
-    font-family: 'Syne', sans-serif;
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: #f0ebe0;
-    margin: 2rem 0 1rem;
-}
+.stSpinner > div { color: var(--brass) !important; }
 
-/* ── Toast-style notice ── */
-.notice {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.72rem;
-    color: #605850;
-    text-align: center;
-    margin-top: 3rem;
-    letter-spacing: 0.08em;
-}
-
-/* ── Error banner ── */
 .error-banner {
-    background: rgba(220,70,70,0.08);
-    border: 1px solid rgba(220,70,70,0.3);
-    border-radius: 14px;
-    padding: 1.5rem 2rem;
-    margin-top: 1rem;
-    color: #f0b8b8;
+    border: 1px solid var(--rust);
+    border-radius: 3px;
+    padding: 1.4rem 1.8rem;
+    color: var(--paper);
     font-size: 0.88rem;
+    line-height: 1.6;
+}
+.error-banner strong { color: var(--rust); font-weight: 600; }
+
+.footer-note {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-top: 3.5rem;
     line-height: 1.6;
 }
 </style>
 """, unsafe_allow_html=True)
 
 
-# ── Helper: render a step card ────────────────────────────────────────────────
-def step_card(num: str, title: str, state: str, desc: str = ""):
-    status_map = {
-        "waiting": ("WAITING", "status-waiting"),
-        "running": ("● RUNNING", "status-running"),
-        "done":    ("✓ DONE",   "status-done"),
-        "error":   ("✕ ERROR",  "status-error"),
-    }
-    label, cls = status_map.get(state, ("", ""))
-    card_cls = {"running": "active", "done": "done", "error": "error"}.get(state, "")
+# ── Helper: render a timeline step ────────────────────────────────────────────
+def timeline_step(num: str, title: str, state: str, desc: str = "", is_last: bool = False):
+    marker_content = {"waiting": num, "running": num, "done": "✓", "error": "✕"}.get(state, num)
+    status_text = {
+        "waiting": "Waiting",
+        "running": "In progress",
+        "done": "Complete",
+        "error": "Failed",
+    }.get(state, "Waiting")
+    marker_cls = state if state in ("running", "done", "error") else ""
+    status_cls = state if state in ("running", "done", "error") else ""
+
     st.markdown(f"""
-    <div class="step-card {card_cls}">
-        <div class="step-header">
-            <span class="step-num">{num}</span>
-            <span class="step-title">{title}</span>
-            <span class="step-status {cls}">{label}</span>
+    <div class="timeline-item">
+        <div class="marker {marker_cls}">{marker_content}</div>
+        <div class="step-body">
+            <div class="step-row">
+                <span class="step-title">{title}</span>
+                <span class="step-status {status_cls}">{status_text}</span>
+            </div>
+            {"<div class='step-desc'>"+desc+"</div>" if desc else ""}
         </div>
-        {"<div style='font-size:0.82rem;color:#706860;margin-top:0.3rem;'>"+desc+"</div>" if desc else ""}
     </div>
     """, unsafe_allow_html=True)
 
@@ -370,54 +386,37 @@ for key, default in (
 # ── Hero ──────────────────────────────────────────────────────────────────────
 st.markdown("""
 <div class="hero">
-    <div class="hero-eyebrow">Multi-Agent AI System</div>
-    <h1>Research<span>Forge</span></h1>
+    <div class="hero-caption">A multi-agent research pipeline</div>
+    <h1>ResearchForge</h1>
     <p class="hero-sub">
-        Four specialized AI agents collaborate — searching, scraping, writing,
-        and critiquing — to deliver a polished research report on any topic.
+        Four agents work in sequence — searching, scraping, writing, and reviewing —
+        to turn a topic into a researched, critiqued report.
     </p>
 </div>
-<div class="divider"></div>
 """, unsafe_allow_html=True)
 
 
-# ── Layout: input left, pipeline right ───────────────────────────────────────
+# ── Layout: brief on the left, ledger on the right ────────────────────────────
 col_input, col_spacer, col_pipeline = st.columns([5, 0.5, 4])
 
 with col_input:
-    st.markdown('<div class="input-card">', unsafe_allow_html=True)
+    st.markdown('<div class="section-label">The brief</div>', unsafe_allow_html=True)
+    st.markdown('<div class="brief-panel">', unsafe_allow_html=True)
     topic = st.text_input(
-        "Research Topic",
-        placeholder="e.g. Quantum computing breakthroughs in 2025",
+        "Research topic",
+        placeholder="Enter your Topic",
         key="topic_input",
         label_visibility="visible",
     )
-    run_btn = st.button("⚡  Run Research Pipeline", use_container_width=True)
+    run_btn = st.button("Run pipeline", use_container_width=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # Example chips (display only)
-    st.markdown("""
-    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.5rem;">
-        <span style="font-family:'DM Mono',monospace;font-size:0.68rem;color:#605850;letter-spacing:0.1em;">TRY →</span>
-    """, unsafe_allow_html=True)
-    examples = ["LLM agents 2025", "CRISPR gene editing", "Fusion energy progress"]
-    for ex in examples:
-        st.markdown(f"""
-        <span style="
-            background:rgba(255,255,255,0.04);
-            border:1px solid rgba(255,255,255,0.08);
-            border-radius:6px;
-            padding:0.25rem 0.7rem;
-            font-size:0.75rem;
-            color:#a09890;
-            font-family:'DM Sans',sans-serif;
-            cursor:default;
-        ">{ex}</span>
-        """, unsafe_allow_html=True)
-    st.markdown("</div>", unsafe_allow_html=True)
+    examples = ["LLM agents in 2025", "CRISPR gene editing", "Fusion energy progress"]
+    chips = "".join(f'<span class="try-chip">{ex}</span>' for ex in examples)
+    st.markdown(f'<div class="try-line"><em>Try</em>{chips}</div>', unsafe_allow_html=True)
 
 with col_pipeline:
-    st.markdown('<div class="section-heading">Pipeline</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-label">The ledger</div>', unsafe_allow_html=True)
 
     r = st.session_state.results
     steps = ["search", "reader", "writer", "critic"]
@@ -433,16 +432,18 @@ with col_pipeline:
                     return "running" if k == step else "waiting"
         return "waiting"
 
-    step_card("01", "Search Agent", step_state("search"), "Gathers recent web information")
-    step_card("02", "Scrape Agent", step_state("reader"), "Scrapes & extracts deep content")
-    step_card("03", "Writer Chain", step_state("writer"), "Drafts the full research report")
-    step_card("04", "Critic Chain", step_state("critic"), "Reviews & scores the report")
+    st.markdown('<div class="timeline">', unsafe_allow_html=True)
+    timeline_step("1", "Search agent", step_state("search"), "Gathers recent sources from the web")
+    timeline_step("2", "Scrape agent", step_state("reader"), "Reads the most relevant source in depth")
+    timeline_step("3", "Writer chain", step_state("writer"), "Drafts the report from the research gathered")
+    timeline_step("4", "Critic chain", step_state("critic"), "Reviews the report and scores it")
+    st.markdown('</div>', unsafe_allow_html=True)
 
 
 # ── Kick off a run ────────────────────────────────────────────────────────────
 if run_btn:
     if not topic.strip():
-        st.warning("Please enter a research topic first.")
+        st.warning("Enter a research topic first.")
     else:
         st.session_state.results = {}
         st.session_state.error = None
@@ -459,7 +460,7 @@ if st.session_state.running and not st.session_state.done:
     try:
         # ── Step 1: Search ──
         if "search" not in results:
-            with st.spinner("🔍  Search Agent is working…"):
+            with st.spinner("Searching for sources..."):
                 agent1 = search_agent()
                 sr = invoke_with_retry(agent1, {
                     "messages": [("user", f"Find recent, reliable and detailed information about: {topic_val}")]
@@ -469,10 +470,8 @@ if st.session_state.running and not st.session_state.done:
 
         # ── Step 2: Scrape ──
         if "reader" not in results:
-            with st.spinner("📄  Scrape Agent is extracting deeper content…"):
+            with st.spinner("Reading the most relevant source..."):
                 agent2 = scrape_agent()
-                # Give it the full search block (not just 800 chars) so a URL is
-                # never cut off, and be explicit about where URLs live in the text.
                 rr = invoke_with_retry(agent2, {
                     "messages": [("user",
                         f"Below are web search results about '{topic_val}'. "
@@ -487,8 +486,7 @@ if st.session_state.running and not st.session_state.done:
 
         # ── Step 3: Writer ──
         if "writer" not in results:
-            with st.spinner("✍️  Writer is drafting the report…"):
-                # Trim inputs to conserve tokens against Groq's per-minute limit.
+            with st.spinner("Drafting the report..."):
                 research_combined = (
                     f"SEARCH RESULTS:\n{results['search'][:2500]}\n\n"
                     f"DETAILED SCRAPED CONTENT:\n{results['reader'][:2500]}"
@@ -501,7 +499,7 @@ if st.session_state.running and not st.session_state.done:
 
         # ── Step 4: Critic ──
         if "critic" not in results:
-            with st.spinner("🧐  Critic is reviewing the report…"):
+            with st.spinner("Reviewing the report..."):
                 results["critic"] = invoke_with_retry(critic_chain, {
                     "report": results["writer"]
                 })
@@ -520,10 +518,10 @@ if st.session_state.running and not st.session_state.done:
 
 # ── Error display ─────────────────────────────────────────────────────────────
 if st.session_state.error:
-    st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
+    st.markdown('<hr class="rule">', unsafe_allow_html=True)
     st.markdown(f"""
     <div class="error-banner">
-        <strong>Pipeline failed at step: {st.session_state.error['step']}</strong><br><br>
+        <strong>The pipeline stopped at: {st.session_state.error['step']}.</strong><br><br>
         {st.session_state.error['message']}
     </div>
     """, unsafe_allow_html=True)
@@ -533,49 +531,40 @@ if st.session_state.error:
 r = st.session_state.results
 
 if r:
-    st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
-    st.markdown('<div class="section-heading">Results</div>', unsafe_allow_html=True)
+    st.markdown('<hr class="rule">', unsafe_allow_html=True)
+    st.markdown('<div class="section-label">The findings</div>', unsafe_allow_html=True)
 
-    # Raw outputs in expanders
     if "search" in r:
-        with st.expander("🔍 Search Results (raw)", expanded=False):
-            st.markdown(f'<div class="result-panel"><div class="result-panel-title">Search Agent Output</div>'
-                        f'<div class="result-content">{r["search"]}</div></div>', unsafe_allow_html=True)
+        with st.expander("Search results, raw", expanded=False):
+            st.markdown(f'<div class="raw-output">{r["search"]}</div>', unsafe_allow_html=True)
 
     if "reader" in r:
-        with st.expander("📄 Scraped Content (raw)", expanded=False):
-            st.markdown(f'<div class="result-panel"><div class="result-panel-title">Scrape Agent Output</div>'
-                        f'<div class="result-content">{r["reader"]}</div></div>', unsafe_allow_html=True)
+        with st.expander("Scraped content, raw", expanded=False):
+            st.markdown(f'<div class="raw-output">{r["reader"]}</div>', unsafe_allow_html=True)
 
-    # Final report
     if "writer" in r:
-        st.markdown("""
-        <div class="report-panel">
-            <div class="panel-label orange">📝 Final Research Report</div>
-        """, unsafe_allow_html=True)
+        st.markdown('<div class="section-label" style="margin-top:2rem;">The report</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="report-panel">', unsafe_allow_html=True)
         st.markdown(r["writer"])
-        st.markdown("</div>", unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
         st.download_button(
-            label="⬇  Download Report (.md)",
+            label="Download report (.md)",
             data=r["writer"],
             file_name=f"research_report_{int(time.time())}.md",
             mime="text/markdown",
         )
 
-    # Critic feedback
     if "critic" in r:
-        st.markdown("""
-        <div class="feedback-panel">
-            <div class="panel-label green">🧐 Critic Feedback</div>
-        """, unsafe_allow_html=True)
+        st.markdown('<div class="section-label" style="margin-top:2.2rem;">The critic\'s notes</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="feedback-panel">', unsafe_allow_html=True)
         st.markdown(r["critic"])
-        st.markdown("</div>", unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
 
 
 # ── Footer ────────────────────────────────────────────────────────────────────
 st.markdown("""
-<div class="notice">
-    ResearchForge · Powered by a LangChain multi-agent pipeline · Built with Streamlit
+<div class="footer-note">
+    Built with a LangChain multi-agent pipeline, rendered in Streamlit.
 </div>
 """, unsafe_allow_html=True)
